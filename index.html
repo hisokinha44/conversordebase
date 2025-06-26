@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de base</title>
+    <link rel="icon" href="assets/engel.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-pulse-once {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden"
+        style="background-image: url(assets/img/Captura\ de\ tela\ 2025-06-26\ 142315.png);">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-white text-center mb-6">Conversor de base</h1>
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <label for="inputValue" class="text-sm font-medium text-gray-700">Valor de entrada:</label>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-white">Base:</span>
+                        <select id="inputBase"
+                            class="text-xs py-1 px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="2">Binário (2)</option>
+                            <option value="8">Octadecimal (8)</option>
+                            <option value="10" selected>Decimal (10)</option>
+                            <option value="16">Hexadecimal (16)</option>
+                            <option value="32">Base 32 (32)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="relative">
+                    <input type="text" id="inputValue" placeholder="Valor a ser convertido"
+                        class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                        autocomplete="off">
+                    <button id="clearInput" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-center mb-6">
+                <button id="swapDirection"
+                    class="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors duration-200">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <label for="outputValue" class="text-sm font-medium text-gray-700">Resultado:</label>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-white">Base:</span>
+                        <select id="outputBase"
+                            class="text-xs py-1 px-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="2">Binário (2)</option>
+                            <option value="8">Octadecimal (8)</option>
+                            <option value="10">Decimal (10)</option>
+                            <option value="16" selected>Hexadecimal (16)</option>
+                            <option value="32">Base 32 (32)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="relative">
+                    <input type="text" id="outputValue" readonly
+                        class="w-full p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                    <button id="copyOutput" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2 mb-4">
+                <button data-base="2"
+                    class="quick-base-btn p-2 bg-gray-100 rounded hover:bg-gray-200 text-sm">Binário</button>
+                <button data-base="8"
+                    class="quick-base-btn p-2 bg-gray-100 rounded hover:bg-gray-200 text-sm">Octadecimal</button>
+                <button data-base="10"
+                    class="quick-base-btn p-2 bg-gray-100 rounded hover:bg-gray-200 text-sm">Decimal</button>
+                <button data-base="16"
+                    class="quick-base-btn p-2 bg-gray-100 rounded hover:bg-gray-200 text-sm">Hexadecimal</button>
+            </div>
+            <button id="convertBtn"
+                class="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                Converta
+            </button>
+        </div>
+        <div class="bg-gray-50 p-4 border-t">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-sm font-medium text-gray-700">Histórico</h3>
+                <button id="clearHistory" class="text-xs text-blue-600 hover:text-blue-800">Limpar</button>
+            </div>
+            <div id="historyList" class="max-h-40 overflow-y-auto text-sm space-y-1">
+
+            </div>
+        </div>
+        <p style="text-align: center; padding-top: 5px;" class="text-white">&copy; Todos os direitos reservados |
+            arthurdoxadrez</p>
+        <p style="text-align: center; padding-top: 5px; padding-bottom: 5px;" class="text-white">Em homenagem ao
+            professor Engel Faustino:D
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const inputValue = document.getElementById('inputValue');
+            const inputBase = document.getElementById('inputBase');
+            const outputValue = document.getElementById('outputValue');
+            const outputBase = document.getElementById('outputBase');
+            const convertBtn = document.getElementById('convertBtn');
+            const swapDirection = document.getElementById('swapDirection');
+            const clearInput = document.getElementById('clearInput');
+            const copyOutput = document.getElementById('copyOutput');
+            const clearHistory = document.getElementById('clearHistory');
+            const historyList = document.getElementById('historyList');
+            const quickBaseBtns = document.querySelectorAll('.quick-base-btn');
+
+
+            let history = JSON.parse(localStorage.getItem('conversionHistory')) || [];
+            renderHistory();
+
+
+            function convertNumber(value, fromBase, toBase) {
+
+                if (!value) return '';
+
+                fromBase = parseInt(fromBase);
+                toBase = parseInt(toBase);
+
+
+                const validChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substring(0, fromBase);
+                const regex = new RegExp(`^[${validChars}]+$`, 'i');
+
+                if (!regex.test(value)) {
+                    return 'Cuidado que ai dá erro kkkk ' + fromBase;
+                }
+
+
+                let decimalValue = parseInt(value, fromBase);
+
+                if (isNaN(decimalValue)) {
+                    return 'deu erro';
+                }
+
+
+                if (toBase === 10) return decimalValue.toString();
+
+                return decimalValue.toString(toBase).toUpperCase();
+            }
+
+
+            function performConversion() {
+                const value = inputValue.value.trim().toUpperCase();
+                const fromBase = inputBase.value;
+                const toBase = outputBase.value;
+
+                if (!value) {
+                    outputValue.value = '';
+                    return;
+                }
+
+                const result = convertNumber(value, fromBase, toBase);
+                outputValue.value = result;
+
+
+                if (result && !result.includes('Inválido') && !result.includes('erro')) {
+                    addToHistory(value, fromBase, result, toBase);
+                }
+
+
+                outputValue.classList.add('animate-pulse-once');
+                setTimeout(() => {
+                    outputValue.classList.remove('animate-pulse-once');
+                }, 500);
+            }
+
+
+            function swapBases() {
+                const tempBase = inputBase.value;
+                inputBase.value = outputBase.value;
+                outputBase.value = tempBase;
+
+                const tempValue = inputValue.value;
+                inputValue.value = outputValue.value;
+                outputValue.value = tempValue;
+
+
+                inputBase.classList.add('animate-pulse-once');
+                outputBase.classList.add('animate-pulse-once');
+                setTimeout(() => {
+                    inputBase.classList.remove('animate-pulse-once');
+                    outputBase.classList.remove('animate-pulse-once');
+                }, 500);
+            }
+
+
+            function addToHistory(value, fromBase, result, toBase) {
+                const conversion = {
+                    input: value,
+                    fromBase: fromBase,
+                    output: result,
+                    toBase: toBase,
+                    timestamp: new Date().toISOString()
+                };
+
+
+                history.unshift(conversion);
+
+
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+
+
+                localStorage.setItem('conversionHistory', JSON.stringify(history));
+
+
+                renderHistory();
+            }
+
+
+            function renderHistory() {
+                historyList.innerHTML = '';
+
+                if (history.length === 0) {
+                    historyList.innerHTML = '<p class="text-gray-500 text-center py-2">Sem histórico</p>';
+                    return;
+                }
+
+                history.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'flex justify-between items-center p-2 bg-white rounded hover:bg-gray-100 cursor-pointer';
+                    historyItem.innerHTML = `
+                        <div>
+                            <span class="font-medium">${item.input}</span>
+                            <span class="text-xs text-gray-500 ml-1">(Base ${item.fromBase})</span>
+                            <i class="fas fa-arrow-right mx-1 text-xs text-gray-400"></i>
+                            <span class="font-medium">${item.output}</span>
+                            <span class="text-xs text-gray-500 ml-1">(Base ${item.toBase})</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600 history-delete" data-index="${index}">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    `;
+
+                    historyItem.addEventListener('click', function () {
+                        inputValue.value = item.input;
+                        inputBase.value = item.fromBase;
+                        outputBase.value = item.toBase;
+                        performConversion();
+                    });
+
+                    historyList.appendChild(historyItem);
+                });
+
+
+                document.querySelectorAll('.history-delete').forEach(btn => {
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const index = parseInt(btn.dataset.index);
+                        history.splice(index, 1);
+                        localStorage.setItem('conversionHistory', JSON.stringify(history));
+                        renderHistory();
+                    });
+                });
+            }
+
+
+            convertBtn.addEventListener('click', performConversion);
+
+            swapDirection.addEventListener('click', swapBases);
+
+            clearInput.addEventListener('click', function () {
+                inputValue.value = '';
+                outputValue.value = '';
+                inputValue.focus();
+            });
+
+            copyOutput.addEventListener('click', function () {
+                if (outputValue.value) {
+                    navigator.clipboard.writeText(outputValue.value);
+
+                    const icon = copyOutput.querySelector('i');
+                    icon.classList.remove('fa-copy');
+                    icon.classList.add('fa-check');
+
+                    setTimeout(() => {
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-copy');
+                    }, 1000);
+                }
+            });
+
+            clearHistory.addEventListener('click', function () {
+                history = [];
+                localStorage.removeItem('conversionHistory');
+                renderHistory();
+            });
+
+
+            quickBaseBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const base = btn.dataset.base;
+
+
+                    if (document.activeElement === outputValue || !inputValue.value) {
+                        outputBase.value = base;
+                    } else {
+
+                        inputBase.value = base;
+                    }
+
+                    performConversion();
+                });
+            });
+
+
+            inputValue.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    performConversion();
+                }
+            });
+
+
+            inputBase.addEventListener('change', performConversion);
+            outputBase.addEventListener('change', performConversion);
+        });
+    </script>
+</body>
+</html>
