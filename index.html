@@ -49,7 +49,7 @@
 
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden"
-        style="background-image: url(assets/img/Captura\ de\ tela\ 2025-06-26\ 142315.png);">
+        style="background-image: url(asses/img/Captra\ de\ tela\ 205-06-26\ 12315.png);">
         <div class="p-6">
             <h1 class="text-2xl font-bold text-white text-center mb-6">Conversor de base</h1>
             <div class="mb-6">
@@ -129,12 +129,11 @@
 
             </div>
         </div>
-        <p style="text-align: center; padding-top: 5px;" class="text-white">&copy; Todos os direitos reservados |
-            arthurdoxadrez</p>
-        <p style="text-align: center; padding-top: 5px; padding-bottom: 5px;" class="text-white">Em homenagem ao
-            professor Engel Faustino:D
-        </p>
     </div>
+    <p style="text-align: center; padding-top: 30px;" class="text-black">&copy; Todos os direitos reservados |
+            Arthur Ferreira</p>
+        <p style="text-align: center;" class="text-black">Em homenagem ao
+            professor Engel Faustino
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -168,14 +167,14 @@
                 const regex = new RegExp(`^[${validChars}]+$`, 'i');
 
                 if (!regex.test(value)) {
-                    return 'Cuidado que ai dá erro kkkk ' + fromBase;
+                    return 'Erro' + fromBase;
                 }
 
 
                 let decimalValue = parseInt(value, fromBase);
 
                 if (isNaN(decimalValue)) {
-                    return 'deu erro';
+                    return 'Erro';
                 }
 
 
@@ -199,7 +198,7 @@
                 outputValue.value = result;
 
 
-                if (result && !result.includes('Inválido') && !result.includes('erro')) {
+                if (result && !result.includes('Inválido') && !result.includes('Erro')) {
                     addToHistory(value, fromBase, result, toBase);
                 }
 
